@@ -3,7 +3,8 @@
 namespace App\Transformers;
 
 use App\User;
-use League\Fractal\TransformerAbstract;		
+use League\Fractal\TransformerAbstract;	
+use App\Transformers\PostTransformer;	
 
 /**
  * summary
@@ -13,6 +14,11 @@ class UserTransformer extends TransformerAbstract
     /**
      * summary
      */
+
+    protected $availableIncludes = [
+        'posts'
+    ];
+
     public function transform(User $user)
 
     {	
@@ -24,6 +30,13 @@ class UserTransformer extends TransformerAbstract
 
     	];
         
+    }
+
+    public function includePosts(User $user)
+    {
+        $posts = $user->posts()->latestFirst()->get();
+
+        return $this->collection($posts, new PostTransformer);
     }
 }
 
